@@ -18,6 +18,13 @@ connectDB();
 
 // Routes import
 import taskRoutes from "./src/routes/task_routes.js";
+import ErrorHandler from "./src/utils/ErrorHandler.js";
 
 // Routes uses
 app.use("/api/v1/tasks", taskRoutes);
+
+app.use((err, req, res, next) => {
+  const { statusCode = 500, message = "Server Error" } = err;
+  console.log(err);
+  res.status(statusCode).json(new ErrorHandler(message, statusCode, err.name));
+});

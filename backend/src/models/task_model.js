@@ -8,11 +8,30 @@ export const taskSchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      required: false,
+      default: "No description provided",
     },
-    completed: {
-      type: Boolean,
-      default: false,
+    status: {
+      type: String,
+      enum: ["not started", "on track", "off track"],
+      default: "not started",
+    },
+    dueDate: {
+      type: Date,
+      default: Date.now(),
+    },
+    time: {
+      type: String,
+      default: Date.now(),
+    },
+    repeat: {
+      type: String,
+      enum: ["never", "daily", "weekly", "monday to friday", "monthly"],
+      default: "never",
+    },
+    priority: {
+      type: String,
+      enum: ["low", "medium", "high"],
+      required: true,
     },
   },
   {

@@ -1,5 +1,6 @@
 import { Task } from "../models/task_model.js";
 import { ApiResponse } from "../utils/ApiResposne.js";
+import ErrorHandler from "../utils/ErrorHandler.js";
 
 const getallTasks = async (req, res) => {
   const allTasks = await Task.find({});
@@ -9,11 +10,11 @@ const getallTasks = async (req, res) => {
 };
 
 const createTask = async (req, res) => {
-  const { title, description } = req.body;
+  const { title, priority } = req.body;
   if (!title) {
-    throw new Error("Title is required");
+    throw new ErrorHandler("Title is required", 400, "ValidationError");
   }
-  const newTask = await Task.create({ title, description });
+  const newTask = await Task.create({ title, priority });
   res
     .status(201)
     .json(ApiResponse(res, 201, newTask, "Task created successfully"));
@@ -24,12 +25,13 @@ const updateTask = async (req, res) => {
 };
 
 const deleteTask = async (req, res) => {
-  console.log(req.params);
   const { id } = req.params;
   const deletedTask = await Task.findByIdAndDelete(id);
 
   if (!deletedTask) {
-    return res.status(404).json({ message: "Task not found" });
+    return res
+      .status(404)
+      .json(new ErrorHandler("Task not found", 404, "NotFoundError"));
   }
   res
     .status(200)
