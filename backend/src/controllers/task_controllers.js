@@ -1,5 +1,5 @@
 import { Task } from "../models/task_model.js";
-import { ApiResponse } from "../utils/ApiResposne.js";
+import ApiResponse from "../utils/ApiResposne.js";
 import ErrorHandler from "../utils/ErrorHandler.js";
 
 const getallTasks = async (req, res) => {
