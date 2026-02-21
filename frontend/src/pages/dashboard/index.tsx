@@ -75,7 +75,7 @@ function Dashboard() {
     <div>
       <div className="text-center space-y-3 pt-8">
         <div className="inline-block">
-          <div className="flex items-center justify-center gap-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-4 rounded-2xl shadow-xl">
+          <div className="flex items-center justify-center gap-3 bg-linear-to-r from-indigo-600 to-purple-600 text-white px-8 py-4 rounded-2xl shadow-xl">
             <CheckCheck className="size-10" />
             <h1 className="text-5xl font-bold">Task Tracker</h1>
           </div>
@@ -87,11 +87,11 @@ function Dashboard() {
 
       <TaskInput />
       <TaskHeader />
-      <div className="space-y-3 pb-8">
+      <div className="space-y-3 mt-5 pb-8">
         {filteredTasks.length === 0 ? (
-          <div className="bg-white/80 backdrop-blur-sm p-16 rounded-3xl shadow-lg text-center border border-white/50">
+          <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg text-center border border-white/50">
             <div className="space-y-4">
-              <div className="inline-block p-6 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full">
+              <div className="inline-block p-6 bg-linear-to-br from-gray-100 to-gray-200 rounded-full">
                 <CheckCheck className="size-16 text-gray-400" />
               </div>
               <p className="text-gray-400 text-xl font-medium">
@@ -104,7 +104,7 @@ function Dashboard() {
             </div>
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {filteredTasks.map((task) => (
               <TaskItem
                 key={task.id}

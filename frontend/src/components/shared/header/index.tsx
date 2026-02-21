@@ -1,5 +1,26 @@
-import { Bell, ChevronDown, Plus, Search, Settings } from "lucide-react";
+import {
+  Bell,
+  ChevronDown,
+  LogOutIcon,
+  Plus,
+  Search,
+  Settings,
+  UserIcon,
+} from "lucide-react";
 import logoMark from "@/assets/logo-mark.png";
+import { useAppSelector } from "@/store";
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import { useLogout } from "@/hooks/query_hook";
 
 const navItems = [
   { label: "Dashboard", active: true },
@@ -9,6 +30,11 @@ const navItems = [
 ];
 
 const Header = () => {
+  const { isAuthenticated, user } = useAppSelector((state) => state.auth);
+  const { mutate } = useLogout();
+  const handleLogout = () => {
+    mutate();
+  };
   return (
     <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white backdrop-blur">
       <div className="max-w-screen-2xl mx-auto h-14 px-6 flex items-center gap-6">
@@ -78,15 +104,41 @@ const Header = () => {
           <div className="w-px h-6 bg-gray-200 mx-1" />
 
           {/* Avatar */}
-          <button className="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-gray-100 active:scale-95 transition-all duration-200">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center text-xs font-bold text-white">
-              JD
-            </div>
-            <span className="hidden md:block text-sm font-medium text-gray-900">
-              John D.
-            </span>
-            <ChevronDown className="hidden md:block w-4 h-4 text-gray-400" />
-          </button>
+          {!isAuthenticated ? (
+            <Link to="/login">
+              <Button className="cursor-pointer bg-teal-600 hover:bg-teal-700 text-white">
+                Login
+              </Button>
+            </Link>
+          ) : (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-gray-100 active:scale-95 transition-all duration-200">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center text-xs font-bold text-white">
+                    {user?.username?.charAt(0).toUpperCase() || "U"}
+                  </div>
+                  <span className="hidden md:block text-sm font-medium text-gray-900">
+                    {user?.username}
+                  </span>
+                  <ChevronDown className="hidden md:block w-4 h-4 text-gray-400" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel className="text-muted-foreground">
+                  Account
+                </DropdownMenuLabel>
+                <DropdownMenuItem>
+                  <UserIcon />
+                  Profile
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem variant="destructive" onClick={handleLogout}>
+                  <LogOutIcon />
+                  Log out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </div>
       </div>
     </header>

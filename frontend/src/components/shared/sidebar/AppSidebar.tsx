@@ -12,7 +12,7 @@ function AppSidebar() {
   const menuItems = [
     { title: "Dashboard", icon: Home, path: "/" },
     { title: "Analytics", icon: Film, path: "/analytics" },
-    { title: "Profile", icon: Tv, path: "/profile" },
+    { title: "Profile", icon: Tv, path: "/me" },
   ];
 
   return (

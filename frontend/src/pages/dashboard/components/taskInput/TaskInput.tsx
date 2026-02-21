@@ -17,7 +17,7 @@ export function TaskInput() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="flex gap-3 border">
+      <div className="flex gap-3 ">
         <div className="relative flex-1">
           <input
             type="text"
