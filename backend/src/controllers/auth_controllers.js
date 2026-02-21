@@ -1,6 +1,7 @@
 import { User } from "../models/user_model.js";
 import ApiResponse from "../utils/ApiResposne.js";
 import createToken from "../utils/createToken.js";
+import bycrypt from "bcryptjs";
 
 const options = {
   httpOnly: true,
@@ -17,7 +18,8 @@ const signup = async (req, res) => {
       .status(400)
       .json(ApiResponse(res, 400, null, "User already exists"));
   }
-  const newUser = new User({ username, email, password });
+  const hashPassword = await bycrypt.hash(password, 10);
+  const newUser = new User({ username, email, password: hashPassword });
   const finalUser = {
     username: newUser.username,
     email: newUser.email,
@@ -44,7 +46,8 @@ const login = async (req, res) => {
   if (!user) {
     return res.status(400).json(ApiResponse(res, 400, null, "User not found"));
   }
-  if (user.password !== password) {
+  const isPasswordValid = await bycrypt.compare(password, user.password);
+  if (!isPasswordValid) {
     return res
       .status(400)
       .json(ApiResponse(res, 400, null, "Invalid password"));
