@@ -6,7 +6,12 @@ import connectDB from "./src/db/index.js";
 configDotenv();
 
 const app = express();
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.frontend_url,
+    credentials: true,
+  }),
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
