@@ -6,6 +6,7 @@ import Signup from "@/pages/signup";
 import Login from "@/pages/login";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import UserProfile from "@/pages/userProfile";
+import NotFound from "@/pages/notFound/notFound";
 
 export const router = createBrowserRouter([
   {
@@ -39,6 +40,10 @@ export const router = createBrowserRouter([
             <UserProfile />
           </ProtectedRoute>
         ),
+      },
+      {
+        path: "*",
+        element: <NotFound />,
       },
     ],
   },
