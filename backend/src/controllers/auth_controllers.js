@@ -1,7 +1,10 @@
 import { User } from "../models/user_model.js";
+import sendEmail from "../services/email_service.js";
 import ApiResponse from "../utils/ApiResposne.js";
 import createToken from "../utils/createToken.js";
-import bycrypt from "bcryptjs";
+import bycrypt from "bcrypt";
+import { otpLoginTemplate } from "../utils/otp_email_template.js";
+import generateOTP from "../utils/generate_otp.js";
 
 const options = {
   httpOnly: true,
@@ -16,41 +19,80 @@ const signup = async (req, res) => {
   if (user) {
     return res
       .status(400)
-      .json(ApiResponse(res, 400, null, "User already exists"));
+      .json(ApiResponse(400, null, "User already exists"));
   }
   const hashPassword = await bycrypt.hash(password, 10);
-  const newUser = new User({ username, email, password: hashPassword });
-  const finalUser = {
-    username: newUser.username,
-    email: newUser.email,
-    id: newUser._id,
-  };
-  await newUser.save();
-  const token = createToken(newUser);
-  console.log(token);
+  const otp = generateOTP();
+
+  User.create({
+    username,
+    email,
+    password: hashPassword,
+    otp,
+    otpExpiresAt: new Date(Date.now() + 10 * 60 * 1000), // OTP valid for 10 minutes
+  });
+  await sendEmail(
+    email,
+    "Welcome to Task Tracker ",
+    otpLoginTemplate(username, otp),
+  );
+
   res
-    .cookie("token", token, options)
     .status(201)
     .json(
       ApiResponse(
-        res,
         201,
-        { ...finalUser, token },
-        "User created successfully",
+        null,
+        "OTP sent to email, please verify to complete registration",
       ),
     );
 };
+
+const verifyOTP = async (req, res) => {
+  const { email, otp } = req.body;
+  const user = await User.findOne({ email });
+  if (!user) {
+    return res.status(400).json(ApiResponse(400, null, "User not found"));
+  }
+
+  if (user.otp !== otp) return res.status(400).json({ message: "Invalid OTP" });
+
+  if (user.otpExpiresAt < Date.now())
+    return res.status(400).json({ message: "OTP expired" });
+
+  user.otp = null;
+  user.otpExpiresAt = null;
+  user.isOTPVerified = true;
+  await user.save();
+  const token = createToken(user);
+  const finalUser = {
+    id: user._id,
+    username: user.username,
+    email: user.email,
+  };
+  res
+    .cookie("token", token, options)
+    .status(200)
+    .json(
+      ApiResponse(
+        200,
+        finalUser,
+        "OTP verified successfully, registration complete",
+      ),
+    );
+};
+
 const login = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (!user) {
-    return res.status(400).json(ApiResponse(res, 400, null, "User not found"));
+    return res.status(400).json(ApiResponse(400, null, "User not found"));
   }
   const isPasswordValid = await bycrypt.compare(password, user.password);
   if (!isPasswordValid) {
     return res
       .status(400)
-      .json(ApiResponse(res, 400, null, "Invalid password"));
+      .json(ApiResponse(400, null, "Invalid password"));
   }
   const token = createToken(user);
   const finalUser = {
@@ -61,25 +103,25 @@ const login = async (req, res) => {
   res
     .cookie("token", token, options)
     .status(200)
-    .json(ApiResponse(res, 200, finalUser, "User logged in successfully"));
+    .json(ApiResponse(200, finalUser, "User logged in successfully"));
 };
 
 const logout = (req, res) => {
   res
     .clearCookie("token", options)
     .status(200)
-    .json(ApiResponse(res, 200, null, "User logged out successfully"));
+    .json(ApiResponse(200, null, "User logged out successfully"));
 };
 
 const isAuthenticated = (req, res) => {
-  finalUser = {
+  const finalUser = {
     id: req.user._id,
     username: req.user.username,
     email: req.user.email,
   };
   return res
     .status(200)
-    .json(ApiResponse(res, 200, finalUser, "User is authenticated"));
+    .json(ApiResponse(200, finalUser, "User is authenticated"));
 };
 
-export { signup, login, logout, isAuthenticated };
+export { signup, login, logout, isAuthenticated, verifyOTP };

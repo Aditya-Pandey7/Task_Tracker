@@ -1,9 +1,9 @@
-const ApiResponse = (res, statusCode, data, message) => {
-  return res.status(statusCode).json({
+const ApiResponse = (statusCode, data, message) => {
+  return {
     statusCode,
     data,
     message,
-  });
+  };
 };
 
 export default ApiResponse;

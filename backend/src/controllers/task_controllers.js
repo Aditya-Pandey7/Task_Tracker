@@ -6,7 +6,7 @@ const getallTasks = async (req, res) => {
   const allTasks = await Task.find({});
   res
     .status(200)
-    .json(ApiResponse(res, 200, allTasks, "All tasks retrieved successfully"));
+    .json(ApiResponse(200, allTasks, "All tasks retrieved successfully"));
 };
 
 const createTask = async (req, res) => {
@@ -17,7 +17,7 @@ const createTask = async (req, res) => {
   const newTask = await Task.create({ title, priority });
   res
     .status(201)
-    .json(ApiResponse(res, 201, newTask, "Task created successfully"));
+    .json(ApiResponse(201, newTask, "Task created successfully"));
 };
 
 const updateTask = async (req, res) => {
@@ -35,7 +35,7 @@ const deleteTask = async (req, res) => {
   }
   res
     .status(200)
-    .json(ApiResponse(res, 200, deletedTask, "Task deleted successfully"));
+    .json(ApiResponse(200, deletedTask, "Task deleted successfully"));
 };
 
 export { getallTasks, createTask, updateTask, deleteTask };
