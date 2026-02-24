@@ -3,10 +3,14 @@ import { TaskStatCard } from "./components/taskStatCard/TaskStatCard";
 import { TaskProgressChart } from "./components/taskProgressChart/TaskProgressChart";
 import { TaskStatusChart } from "./components/taskStatusChart/TaskStatusChart";
 import { TaskList } from "./components/taskList/TaskList";
+import { useTheme } from "@/context/theme/ThemeContext";
 
 function Analytics() {
+  const { theme } = useTheme();
   return (
-    <div className="min-h-screen   bg-slate-50 ">
+    <div
+      className={`min-h-screen ${theme === "dark" ? "bg-gray-900" : "bg-slate-50"} `}
+    >
       {/* Main Content */}
       <main className="p-8 ">
         {/* Welcome Section */}
@@ -59,11 +63,6 @@ function Analytics() {
         <div className="mb-8">
           <TaskList />
         </div>
-
-        {/* Team Activity */}
-        {/* <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
-          <TeamActivity />
-        </div> */}
       </main>
     </div>
   );

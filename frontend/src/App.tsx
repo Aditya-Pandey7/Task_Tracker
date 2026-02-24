@@ -12,6 +12,7 @@ import { useEffect } from "react";
 import { useAppDispatch } from "./store";
 import { checkAuthStatus } from "./store/auth/authThunk";
 import { Toaster } from "./components/ui/sonner";
+import { ThemeProvider } from "./context/theme/ThemeContextProvider";
 
 function App() {
   const queryClient = new QueryClient();
@@ -24,19 +25,21 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SidebarProvider>
-        <AppSidebar />
-        <SidebarInset>
-          <main className=" flex flex-col min-h-screen ">
-            <Toaster position="top-right" />
-            <Header />
-            <SidebarTrigger className="absolute" />
-            <div className="container mx-auto flex-1">
-              <Outlet />
-            </div>
-          </main>
-        </SidebarInset>
-      </SidebarProvider>
+      <ThemeProvider>
+        <SidebarProvider>
+          <AppSidebar />
+          <SidebarInset>
+            <main className=" flex flex-col min-h-screen ">
+              <Toaster position="top-right" />
+              <Header />
+              <SidebarTrigger className="absolute" />
+              <div className="container mx-auto flex-1">
+                <Outlet />
+              </div>
+            </main>
+          </SidebarInset>
+        </SidebarProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }
