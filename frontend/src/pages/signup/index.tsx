@@ -19,7 +19,7 @@ function Signup() {
     mutate(data, {
       onSuccess: () => {
         reset();
-        navigate("/");
+        navigate("/verify-otp/" + data.email);
       },
     });
   };

@@ -7,6 +7,7 @@ import Login from "@/pages/login";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import UserProfile from "@/pages/userProfile";
 import NotFound from "@/pages/notFound/notFound";
+import OtpPage from "@/pages/otpPage";
 
 export const router = createBrowserRouter([
   {
@@ -32,6 +33,10 @@ export const router = createBrowserRouter([
       {
         path: "/signup",
         element: <Signup />,
+      },
+      {
+        path: "/verify-otp/:email",
+        element: <OtpPage />,
       },
       {
         path: "/me",

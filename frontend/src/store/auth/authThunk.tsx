@@ -1,10 +1,10 @@
 import axios from "@/config/axios";
-import type { IUser } from "@/sharedType";
+import type { IApiresponse, IUser } from "@/sharedType";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { AxiosError } from "axios";
 
 export const checkAuthStatus = createAsyncThunk<
-  IUser,
+  IApiresponse<IUser>,
   void,
   { rejectValue: string }
 >("auth/checkAuthStatus", async (_, { rejectWithValue }) => {

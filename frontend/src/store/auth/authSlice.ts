@@ -47,7 +47,7 @@ const authSlice = createSlice({
     });
     builder.addCase(checkAuthStatus.fulfilled, (state, action) => {
       state.isLoading = false;
-      state.user = action.payload;
+      state.user = action.payload.data;
       state.isAuthenticated = true;
     });
     builder.addCase(checkAuthStatus.rejected, (state, action) => {

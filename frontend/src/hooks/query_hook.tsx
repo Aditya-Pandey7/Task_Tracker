@@ -4,9 +4,9 @@ import { logout, setUser } from "@/store/auth/authSlice";
 import type { IApiresponse, IErrorResponse, IUser } from "@/sharedType";
 import { useAppDispatch } from "@/store";
 import { showErrorToast } from "@/utils/errorToast";
+import successToast from "@/utils/successToast";
 
 export const useSignup = () => {
-  const dispatch = useAppDispatch();
   return useMutation({
     mutationKey: ["signup"],
     mutationFn: async (data: {
@@ -18,8 +18,7 @@ export const useSignup = () => {
       return response.data;
     },
     onSuccess: (data: IApiresponse<IUser>) => {
-      dispatch(setUser(data.data));
-      console.log("User set in useSignup onSuccess:", data.data);
+      successToast(data.message);
     },
     onError: (error: IErrorResponse) => {
       showErrorToast(error);
@@ -54,6 +53,25 @@ export const useLogout = () => {
     },
     onSuccess: () => {
       dispatch(logout());
+    },
+    onError: (error: IErrorResponse) => {
+      showErrorToast(error);
+    },
+  });
+};
+
+export const useVerifyOtp = () => {
+  const dispatch = useAppDispatch();
+  return useMutation({
+    mutationKey: ["verifyOtp"],
+    mutationFn: async (data: { email: string; otp: string }) => {
+      const response = await axios.post("/auth/verify-otp", data);
+      return response.data;
+    },
+    onSuccess: (data: IApiresponse<IUser>) => {
+      dispatch(setUser(data.data));
+      successToast(data.message);
+      console.log("User set in useVerifyOtp onSuccess:", data.data);
     },
     onError: (error: IErrorResponse) => {
       showErrorToast(error);
