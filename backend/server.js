@@ -28,10 +28,10 @@ app.listen(process.env.PORT, () => {
 
 connectDB();
 
-// Routes import
-import taskRoutes from "./src/routes/task_routes.js";
+// Routes import (dynamic to ensure env vars are loaded first)
+const { default: taskRoutes } = await import("./src/routes/task_routes.js");
+const { default: userRoutes } = await import("./src/routes/auth_routes.js");
 import ErrorHandler from "./src/utils/ErrorHandler.js";
-import userRoutes from "./src/routes/auth_routes.js";
 
 // Routes uses
 app.use("/api/v1/tasks", taskRoutes);

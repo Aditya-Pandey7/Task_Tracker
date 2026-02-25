@@ -1,3 +1,4 @@
+import { authenticateJwt } from "../middlewares/jwt_middleware.js";
 import { Router } from "express";
 import {
   getallTasks,
@@ -8,9 +9,9 @@ import {
 
 const router = Router();
 
-router.route("/").get(getallTasks);
-router.route("/").post(createTask);
-router.route("/:id").put(updateTask);
-router.route("/:id").delete(deleteTask);
+router.route("/").get(authenticateJwt, getallTasks);
+router.route("/").post(authenticateJwt, createTask);
+router.route("/:id").put(authenticateJwt, updateTask);
+router.route("/:id").delete(authenticateJwt, deleteTask);
 
 export default router;

@@ -24,11 +24,12 @@ export default function Login() {
       },
     });
   };
+
   return (
-    <div className="h-full flex items-center justify-center bg-gray-100 ">
-      <div className="w-full max-w-4xl bg-white shadow-2xl rounded-3xl overflow-hidden grid grid-cols-1 md:grid-cols-2">
+    <div className="h-full flex items-center justify-center bg-gray-100 dark:bg-gray-950 transition-colors">
+      <div className="w-full max-w-4xl bg-white dark:bg-gray-900 shadow-2xl rounded-3xl overflow-hidden grid grid-cols-1 md:grid-cols-2 border border-gray-200 dark:border-gray-800">
         {/* Left Side */}
-        <div className="hidden md:flex flex-col justify-center items-center bg-indigo-600 text-white p-12">
+        <div className="hidden md:flex flex-col justify-center items-center bg-indigo-600 dark:bg-indigo-700 text-white p-12">
           <h2 className="text-4xl font-bold mb-4">Welcome Back</h2>
           <p className="text-indigo-100 text-lg text-center max-w-sm">
             Sign in to manage your dashboard, track activity, and explore all
@@ -39,10 +40,10 @@ export default function Login() {
         {/* Right Side Form */}
         <div className="p-12">
           <div className="max-w-md mx-auto">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">
+            <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">
               Login to your account
             </h1>
-            <p className="text-gray-500 mb-8">
+            <p className="text-gray-500 dark:text-gray-400 mb-8">
               Enter your email and password below
             </p>
 
@@ -50,13 +51,23 @@ export default function Login() {
               {/* Email */}
               <div className="relative">
                 <Mail
-                  className="absolute left-4 top-4 text-gray-400"
+                  className="absolute left-4 top-4 text-gray-400 dark:text-gray-500"
                   size={20}
                 />
                 <input
                   type="email"
                   placeholder="Email address"
-                  className="w-full pl-12 pr-4 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 outline-none transition"
+                  className="
+                    w-full pl-12 pr-4 py-4
+                    border border-gray-300 dark:border-gray-700
+                    bg-white dark:bg-gray-800
+                    text-gray-900 dark:text-gray-100
+                    rounded-xl
+                    focus:ring-2 focus:ring-indigo-600
+                    focus:border-indigo-600
+                    outline-none transition
+                    placeholder:text-gray-400 dark:placeholder:text-gray-500
+                  "
                   {...register("email", { required: true })}
                 />
               </div>
@@ -64,19 +75,29 @@ export default function Login() {
               {/* Password */}
               <div className="relative">
                 <Lock
-                  className="absolute left-4 top-4 text-gray-400"
+                  className="absolute left-4 top-4 text-gray-400 dark:text-gray-500"
                   size={20}
                 />
                 <input
                   type={showPassword ? "text" : "password"}
                   placeholder="Password"
-                  className="w-full pl-12 pr-12 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 outline-none transition"
+                  className="
+                    w-full pl-12 pr-12 py-4
+                    border border-gray-300 dark:border-gray-700
+                    bg-white dark:bg-gray-800
+                    text-gray-900 dark:text-gray-100
+                    rounded-xl
+                    focus:ring-2 focus:ring-indigo-600
+                    focus:border-indigo-600
+                    outline-none transition
+                    placeholder:text-gray-400 dark:placeholder:text-gray-500
+                  "
                   {...register("password", { required: true })}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-4 text-gray-400"
+                  className="absolute right-4 top-4 text-gray-400 dark:text-gray-500"
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
@@ -84,13 +105,13 @@ export default function Login() {
 
               {/* Remember + Forgot */}
               <div className="flex items-center justify-between text-sm">
-                <label className="flex items-center gap-2 text-gray-600">
+                <label className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
                   <input type="checkbox" className="accent-indigo-600" />
                   Remember me
                 </label>
                 <a
                   href="#"
-                  className="text-indigo-600 hover:underline font-medium"
+                  className="text-indigo-600 dark:text-indigo-400 hover:underline font-medium"
                 >
                   Forgot password?
                 </a>
@@ -99,17 +120,25 @@ export default function Login() {
               {/* Button */}
               <button
                 type="submit"
-                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-xl font-semibold text-lg transition duration-300"
+                className="
+                  w-full
+                  bg-indigo-600 hover:bg-indigo-700
+                  dark:bg-indigo-600 dark:hover:bg-indigo-500
+                  text-white
+                  py-4 rounded-xl
+                  font-semibold text-lg
+                  transition duration-300
+                "
               >
                 {isPending ? "Logging in..." : "Login"}
               </button>
             </form>
 
             {/* Footer */}
-            <p className="text-center text-sm text-gray-500 mt-8">
+            <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-8">
               Don’t have an account?{" "}
               <Link to="/signup">
-                <span className="text-indigo-600 cursor-pointer hover:underline font-medium">
+                <span className="text-indigo-600 dark:text-indigo-400 cursor-pointer hover:underline font-medium">
                   Sign Up
                 </span>
               </Link>

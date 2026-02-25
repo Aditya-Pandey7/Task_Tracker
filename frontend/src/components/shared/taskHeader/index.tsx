@@ -5,12 +5,13 @@ import {
   User,
   CheckCircle2,
   ArrowUpDown,
+  ActivityIcon,
 } from "lucide-react";
 
 function TaskHeader() {
   return (
     <div className="w-full border-b bg-muted/30 px-6 py-4">
-      <div className="grid grid-cols-5 items-center text-sm font-semibold text-muted-foreground">
+      <div className="grid grid-cols-6 items-center text-sm font-semibold text-muted-foreground">
         {/* Task */}
         <div className="flex items-center gap-2 cursor-pointer hover:text-foreground transition">
           <ListTodo size={16} />
@@ -43,6 +44,11 @@ function TaskHeader() {
         <div className="flex items-center justify-end gap-2 cursor-pointer hover:text-foreground transition">
           <CheckCircle2 size={16} />
           <span>Status</span>
+          <ArrowUpDown size={14} />
+        </div>
+        <div className="flex items-center justify-end gap-2 cursor-pointer hover:text-foreground transition">
+          <ActivityIcon size={16} />
+          <span>Actions</span>
           <ArrowUpDown size={14} />
         </div>
       </div>

@@ -1,29 +1,41 @@
 import { useState } from "react";
 import { Plus, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useCreateTask } from "@/hooks/query_hook";
+import { useForm, type SubmitHandler } from "react-hook-form";
+import LoadingDialog from "@/components/shared/loadingDialog";
+
+type FormData = {
+  title: string;
+  priority: string;
+};
 
 export function TaskInput() {
-  const [taskText, setTaskText] = useState("");
   const [priority, setPriority] = useState("medium");
+  const { mutate: createTask, isPending } = useCreateTask();
+  const { register, handleSubmit, reset } = useForm<FormData>();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (taskText.trim()) {
-      console.log("Task added:", taskText, priority);
-      setTaskText("");
+  const onSubmit: SubmitHandler<FormData> = (data) => {
+    if (data.title.trim()) {
+      console.log("Task added:", data.title, data.priority);
+      createTask({ title: data.title, priority });
+      reset();
       setPriority("medium");
     }
   };
 
+  if (isPending) {
+    return <LoadingDialog open={true} />;
+  }
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="flex gap-3 ">
         <div className="relative flex-1">
           <input
             type="text"
             placeholder="What needs to be done today?"
-            value={taskText}
-            onChange={(e) => setTaskText(e.target.value)}
+            {...register("title", { required: true, maxLength: 100 })}
             className="w-full h-14 text-lg px-6 border-2 border-gray-200 focus:border-indigo-400 rounded-2xl shadow-sm"
           />
           <Sparkles className="absolute right-4 top-1/2 -translate-y-1/2 size-5 text-gray-400" />
@@ -31,14 +43,16 @@ export function TaskInput() {
         <Button
           type="submit"
           size="lg"
-          className="h-14 px-8 rounded-2xl bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 shadow-lg shadow-indigo-200 transition-all duration-300 hover:scale-105"
+          className="h-14 px-8 rounded-2xl bg-linear-to-r from-indigo-600 to-purple-600  shadow-2xl font-bold transition-all duration-300 hover:scale-105 "
         >
-          <Plus className="size-5 mr-2" />
+          <Plus className="size-5 " />
           Add Task
         </Button>
       </div>
-      <div className="flex gap-3 items-center justify-center">
-        <span className="text-sm font-medium text-gray-700">Priority:</span>
+      <div className="flex gap-3 items-center justify-center mb-12">
+        <span className="text-sm  text-muted-foreground font-bold">
+          Priority:
+        </span>
         <div className="flex gap-3">
           {[
             {
@@ -57,10 +71,14 @@ export function TaskInput() {
               key={p.value}
               type="button"
               onClick={() => setPriority(p.value)}
-              className={`px-6 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
-                priority === p.value
-                  ? `bg-gradient-to-r ${p.color} text-white shadow-lg scale-105`
-                  : "bg-white text-gray-700 hover:bg-gray-50 border-2 border-gray-200"
+              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
+                priority === p.value.toLowerCase()
+                  ? priority === "low"
+                    ? "bg-emerald-500 text-white shadow-md"
+                    : priority === "medium"
+                      ? "bg-amber-500 text-white shadow-md"
+                      : "bg-rose-500 text-white shadow-md"
+                  : "bg-white text-slate-600 hover:bg-slate-50 border"
               }`}
             >
               {p.label}

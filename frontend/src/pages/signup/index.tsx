@@ -25,10 +25,10 @@ function Signup() {
   };
 
   return (
-    <section className="min-h-screen flex items-center justify-center bg-gray-100 px-6">
-      <div className="w-full max-w-5xl bg-white shadow-2xl rounded-3xl overflow-hidden grid grid-cols-1 md:grid-cols-2">
+    <section className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-950 transition-colors px-6">
+      <div className="w-full max-w-5xl bg-white dark:bg-gray-900 shadow-2xl rounded-3xl overflow-hidden grid grid-cols-1 md:grid-cols-2 border border-gray-200 dark:border-gray-800">
         {/* LEFT SIDE */}
-        <div className="hidden md:flex flex-col justify-center items-center bg-indigo-600 text-white p-12">
+        <div className="hidden md:flex flex-col justify-center items-center bg-indigo-600 dark:bg-indigo-700 text-white p-12">
           <h2 className="text-4xl font-bold mb-4">Join Us Today 🚀</h2>
           <p className="text-indigo-100 text-lg text-center max-w-sm">
             Create your account and start exploring powerful features built just
@@ -39,55 +39,55 @@ function Signup() {
         {/* RIGHT SIDE FORM */}
         <div className="p-12">
           <div className="max-w-md mx-auto">
-            <h1 className="text-3xl font-bold text-gray-800 mb-2">
+            <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">
               Create your account
             </h1>
-            <p className="text-gray-500 mb-8">
+            <p className="text-gray-500 dark:text-gray-400 mb-8">
               Fill in the details below to get started
             </p>
 
             <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
               {/* Username */}
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">
+                <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
                   Username
                 </label>
                 <Input
                   {...register("username", { required: true })}
                   type="text"
                   placeholder="Enter your username"
-                  className="h-12 rounded-xl focus:ring-2 focus:ring-indigo-600"
+                  className="h-12 rounded-xl bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-600"
                 />
               </div>
 
               {/* Email */}
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">
+                <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
                   Email
                 </label>
                 <Input
                   {...register("email", { required: true })}
                   type="email"
                   placeholder="Enter your email"
-                  className="h-12 rounded-xl focus:ring-2 focus:ring-indigo-600"
+                  className="h-12 rounded-xl bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-600"
                 />
               </div>
 
               {/* Password */}
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">
+                <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
                   Password
                 </label>
                 <Input
                   {...register("password", { required: true })}
                   type="password"
                   placeholder="••••••••"
-                  className="h-12 rounded-xl focus:ring-2 focus:ring-indigo-600"
+                  className="h-12 rounded-xl bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-600"
                 />
               </div>
 
               {/* Terms */}
-              <div className="flex items-start gap-3 text-sm text-gray-600">
+              <div className="flex items-start gap-3 text-sm text-gray-600 dark:text-gray-400">
                 <input
                   type="checkbox"
                   required
@@ -95,7 +95,7 @@ function Signup() {
                 />
                 <p>
                   I agree to the{" "}
-                  <span className="text-indigo-600 font-medium cursor-pointer hover:underline">
+                  <span className="text-indigo-600 dark:text-indigo-400 font-medium cursor-pointer hover:underline">
                     Terms & Conditions
                   </span>
                 </p>
@@ -105,17 +105,17 @@ function Signup() {
               <Button
                 type="submit"
                 disabled={isPending}
-                className="w-full h-12 text-lg rounded-xl bg-indigo-600 hover:bg-indigo-700 transition"
+                className="w-full h-12 text-lg rounded-xl bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-600 dark:hover:bg-indigo-500 transition"
               >
                 {isPending ? "Creating account..." : "Create Account"}
               </Button>
 
               {/* Footer */}
-              <p className="text-sm text-gray-500 text-center mt-6">
+              <p className="text-sm text-gray-500 dark:text-gray-400 text-center mt-6">
                 Already have an account?{" "}
                 <span
                   onClick={() => navigate("/login")}
-                  className="text-indigo-600 font-medium cursor-pointer hover:underline"
+                  className="text-indigo-600 dark:text-indigo-400 font-medium cursor-pointer hover:underline"
                 >
                   Login here
                 </span>

@@ -17,11 +17,11 @@ export const taskSchema = new mongoose.Schema(
     },
     dueDate: {
       type: Date,
-      default: Date.now(),
+      default: Date.now,
     },
     time: {
-      type: String,
-      default: Date.now(),
+      type: Date,
+      default: Date.now,
     },
     repeat: {
       type: String,
@@ -31,6 +31,15 @@ export const taskSchema = new mongoose.Schema(
     priority: {
       type: String,
       enum: ["low", "medium", "high"],
+      required: true,
+    },
+    isCompleted: {
+      type: Boolean,
+      default: false,
+    },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
   },

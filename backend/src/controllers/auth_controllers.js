@@ -5,6 +5,7 @@ import createToken from "../utils/createToken.js";
 import bycrypt from "bcrypt";
 import { otpLoginTemplate } from "../utils/otp_email_template.js";
 import generateOTP from "../utils/generate_otp.js";
+import { Task } from "../models/task_model.js";
 
 const options = {
   httpOnly: true,
@@ -17,9 +18,7 @@ const signup = async (req, res) => {
   const { username, email, password } = req.body;
   const user = await User.findOne({ email });
   if (user) {
-    return res
-      .status(400)
-      .json(ApiResponse(400, null, "User already exists"));
+    return res.status(400).json(ApiResponse(400, null, "User already exists"));
   }
   const hashPassword = await bycrypt.hash(password, 10);
   const otp = generateOTP();
@@ -90,9 +89,7 @@ const login = async (req, res) => {
   }
   const isPasswordValid = await bycrypt.compare(password, user.password);
   if (!isPasswordValid) {
-    return res
-      .status(400)
-      .json(ApiResponse(400, null, "Invalid password"));
+    return res.status(400).json(ApiResponse(400, null, "Invalid password"));
   }
   const token = createToken(user);
   const finalUser = {
@@ -113,11 +110,14 @@ const logout = (req, res) => {
     .json(ApiResponse(200, null, "User logged out successfully"));
 };
 
-const isAuthenticated = (req, res) => {
+const isAuthenticated = async (req, res) => {
+  const allTasks = await Task.find({ user: req.user._id });
+
   const finalUser = {
     id: req.user._id,
     username: req.user.username,
     email: req.user.email,
+    tasks: allTasks,
   };
   return res
     .status(200)

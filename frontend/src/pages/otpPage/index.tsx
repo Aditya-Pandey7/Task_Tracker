@@ -32,8 +32,7 @@ const OtpPage = () => {
 
   const handleSubmit = () => {
     const finalOtp = otp.join("");
-    console.log("OTP Entered:", finalOtp);
-    // Call verify API here
+
     mutate(
       { email: email!, otp: finalOtp },
       {
@@ -45,11 +44,13 @@ const OtpPage = () => {
   };
 
   return (
-    <section className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div className="bg-white shadow-2xl rounded-2xl p-10 w-full max-w-md text-center">
-        <h1 className="text-3xl font-bold text-gray-800">Verify OTP</h1>
+    <section className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-950 transition-colors px-4">
+      <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-2xl rounded-2xl p-10 w-full max-w-md text-center transition-colors">
+        <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100">
+          Verify OTP
+        </h1>
 
-        <p className="text-gray-500 mt-3 mb-8">
+        <p className="text-gray-500 dark:text-gray-400 mt-3 mb-8">
           Enter the 6-digit code sent to your email
         </p>
 
@@ -67,7 +68,17 @@ const OtpPage = () => {
               }}
               onChange={(e) => handleChange(e.target.value, index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
-              className="w-12 h-14 text-center text-xl font-semibold border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-600 outline-none transition"
+              className="
+                w-12 h-14 text-center text-xl font-semibold
+                bg-white dark:bg-gray-800
+                text-gray-900 dark:text-gray-100
+                border border-gray-300 dark:border-gray-700
+                rounded-lg
+                focus:ring-2 focus:ring-indigo-600
+                outline-none transition
+                disabled:bg-gray-200 dark:disabled:bg-gray-700
+                disabled:cursor-not-allowed
+              "
             />
           ))}
         </div>
@@ -76,15 +87,25 @@ const OtpPage = () => {
         <button
           disabled={isPending}
           onClick={handleSubmit}
-          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-semibold transition duration-300 cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed"
+          className="
+            w-full
+            bg-indigo-600 hover:bg-indigo-700
+            dark:bg-indigo-600 dark:hover:bg-indigo-500
+            text-white
+            py-3 rounded-xl
+            font-semibold
+            transition duration-300
+            disabled:bg-gray-400 dark:disabled:bg-gray-600
+            disabled:cursor-not-allowed
+          "
         >
           {isPending ? "Verifying..." : "Verify OTP"}
         </button>
 
         {/* Resend */}
-        <p className="text-sm text-gray-500 mt-6">
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-6">
           Didn’t receive code?{" "}
-          <span className="text-indigo-600 font-medium cursor-pointer hover:underline">
+          <span className="text-indigo-600 dark:text-indigo-400 font-medium cursor-pointer hover:underline">
             Resend OTP
           </span>
         </p>
@@ -92,7 +113,7 @@ const OtpPage = () => {
         {/* Back */}
         <button
           onClick={() => navigate("/signup")}
-          className="mt-6 text-sm text-gray-400 hover:text-gray-600 transition"
+          className="mt-6 text-sm text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition"
         >
           ← Back to Signup
         </button>

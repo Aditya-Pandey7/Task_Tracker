@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { useTheme } from "@/context/theme/ThemeContext";
 import { CheckCircle2, Circle, Clock, Plus } from "lucide-react";
 
 const tasks = [
@@ -53,6 +54,7 @@ const tasks = [
 ];
 
 export function TaskList() {
+  const { theme } = useTheme();
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "Completed":
@@ -87,63 +89,97 @@ export function TaskList() {
   };
 
   return (
-    <div className="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
+    <div
+      className={`
+    ${theme === "dark" ? "bg-gray-900 border-gray-700" : "bg-white border-slate-200"}
+    rounded-xl p-6 shadow-sm border
+  `}
+    >
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-lg font-semibold text-slate-900">Active Tasks</h2>
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+          Active Tasks
+        </h2>
         <Button className="cursor-pointer">
           <Plus />
           Add Task
         </Button>
       </div>
+
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-slate-200">
-              <th className="text-left py-3 px-2 text-sm text-slate-600">
+            <tr className="border-b border-slate-200 dark:border-slate-700">
+              <th className="text-left py-3 px-2 text-sm text-slate-600 dark:text-slate-400">
                 Task
               </th>
-              <th className="text-left py-3 px-2 text-sm text-slate-600">
+              <th className="text-left py-3 px-2 text-sm text-slate-600 dark:text-slate-400">
                 Assignee
               </th>
-              <th className="text-left py-3 px-2 text-sm text-slate-600">
+              <th className="text-left py-3 px-2 text-sm text-slate-600 dark:text-slate-400">
                 Priority
               </th>
-              <th className="text-left py-3 px-2 text-sm text-slate-600">
+              <th className="text-left py-3 px-2 text-sm text-slate-600 dark:text-slate-400">
                 Status
               </th>
-              <th className="text-left py-3 px-2 text-sm text-slate-600">
+              <th className="text-left py-3 px-2 text-sm text-slate-600 dark:text-slate-400">
                 Due Date
               </th>
             </tr>
           </thead>
+
           <tbody>
             {tasks.map((task) => (
               <tr
                 key={task.id}
-                className="border-b border-slate-100 last:border-0 hover:bg-slate-50"
+                className="
+              border-b border-slate-100
+              dark:border-slate-800
+              last:border-0
+              hover:bg-slate-50
+              dark:hover:bg-slate-800/50
+              transition-colors
+            "
               >
                 <td className="py-3 px-2">
                   <div className="flex items-center gap-3">
                     {getStatusIcon(task.status)}
-                    <span className="text-slate-900">{task.title}</span>
+                    <span className="text-slate-800 dark:text-slate-200">
+                      {task.title}
+                    </span>
                   </div>
                 </td>
-                <td className="py-3 px-2 text-slate-700">{task.assignee}</td>
+
+                <td className="py-3 px-2 text-slate-700 dark:text-slate-300">
+                  {task.assignee}
+                </td>
+
                 <td className="py-3 px-2">
                   <span
-                    className={`px-2 py-1 rounded-full text-xs ${getPriorityColor(task.priority)}`}
+                    className={`
+                  px-2 py-1 rounded-full text-xs
+                  ${getPriorityColor(task.priority)}
+                  dark:bg-opacity-20
+                `}
                   >
                     {task.priority}
                   </span>
                 </td>
+
                 <td className="py-3 px-2">
                   <span
-                    className={`px-2 py-1 rounded-full text-xs ${getStatusColor(task.status)}`}
+                    className={`
+                  px-2 py-1 rounded-full text-xs
+                  ${getStatusColor(task.status)}
+                  dark:bg-opacity-20
+                `}
                   >
                     {task.status}
                   </span>
                 </td>
-                <td className="py-3 px-2 text-slate-700">{task.dueDate}</td>
+
+                <td className="py-3 px-2 text-slate-700 dark:text-slate-300">
+                  {task.dueDate}
+                </td>
               </tr>
             ))}
           </tbody>

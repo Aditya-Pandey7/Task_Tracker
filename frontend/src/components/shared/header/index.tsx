@@ -4,7 +4,6 @@ import {
   LogOutIcon,
   Plus,
   Search,
-  Settings,
   UserIcon,
 } from "lucide-react";
 import logoMark from "@/assets/logo-mark.png";
@@ -90,8 +89,6 @@ const Header = () => {
             <Plus className="w-4 h-4" />
             New Task
           </button>
-
-          {/* Icon Buttons */}
 
           <button
             className="relative flex items-center justify-center w-9 h-9 rounded-lg hover:bg-gray-100 hover:text-black active:scale-95 transition-all duration-200"
