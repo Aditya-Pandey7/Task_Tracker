@@ -70,4 +70,39 @@ export const {
   clearError,
 } = taskSlice.actions;
 
+// Selectors
+export const selectAllTasks = (state: { task: TaskState }) => state.task.tasks;
+
+export const selectIncompleteTasks = (state: { task: TaskState }) =>
+  state.task.tasks.filter((task) => !task.isCompleted);
+
+export const selectCompletedTasks = (state: { task: TaskState }) =>
+  state.task.tasks.filter((task) => task.isCompleted);
+
+export const selectTodayTasks = (state: { task: TaskState }) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  return state.task.tasks.filter((task) => {
+    const dueDate = new Date(task.dueDate);
+    dueDate.setHours(0, 0, 0, 0);
+    return dueDate >= today && dueDate < tomorrow && !task.isCompleted;
+  });
+};
+
+export const selectFutureTasks = (state: { task: TaskState }) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  return state.task.tasks.filter((task) => {
+    const dueDate = new Date(task.dueDate);
+    dueDate.setHours(0, 0, 0, 0);
+    return dueDate >= tomorrow && !task.isCompleted;
+  });
+};
+
 export default taskSlice.reducer;

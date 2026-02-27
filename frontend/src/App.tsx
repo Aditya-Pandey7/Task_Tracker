@@ -32,7 +32,7 @@ function App() {
             <main className=" flex flex-col min-h-screen ">
               <Toaster position="top-right" />
               <Header />
-              <SidebarTrigger className="absolute" />
+              <SidebarTrigger className="absolute top-1 left-1 z-100" />
               <div className="container mx-auto flex-1">
                 <Outlet />
               </div>

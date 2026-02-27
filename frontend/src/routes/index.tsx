@@ -8,6 +8,9 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import UserProfile from "@/pages/userProfile";
 import NotFound from "@/pages/notFound/notFound";
 import OtpPage from "@/pages/otpPage";
+import CompletedTasks from "@/pages/completedTasks";
+import TodayTasks from "@/pages/todayTasks";
+import FutureTasks from "@/pages/futureTasks";
 
 export const router = createBrowserRouter([
   {
@@ -23,6 +26,30 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <Analytics />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/completed",
+        element: (
+          <ProtectedRoute>
+            <CompletedTasks />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/today",
+        element: (
+          <ProtectedRoute>
+            <TodayTasks />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/upcoming",
+        element: (
+          <ProtectedRoute>
+            <FutureTasks />
           </ProtectedRoute>
         ),
       },

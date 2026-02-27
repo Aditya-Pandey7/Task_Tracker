@@ -1,8 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useSignup } from "@/hooks/query_hook";
-import { useForm } from "react-hook-form";
+import { Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
+import { useForm, type FieldErrors } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 interface SignupProps {
   username: string;
@@ -11,8 +14,14 @@ interface SignupProps {
 }
 
 function Signup() {
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
-  const { register, handleSubmit, reset } = useForm<SignupProps>();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<SignupProps>();
   const { mutate, isPending } = useSignup();
 
   const onSubmit = (data: SignupProps) => {
@@ -22,6 +31,13 @@ function Signup() {
         navigate("/verify-otp/" + data.email);
       },
     });
+  };
+
+  const onInvalid = (errors: FieldErrors<SignupProps>) => {
+    const firstError = Object.values(errors)[0];
+    if (firstError?.message) {
+      toast.error(firstError.message as string);
+    }
   };
 
   return (
@@ -46,18 +62,41 @@ function Signup() {
               Fill in the details below to get started
             </p>
 
-            <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+            <form
+              className="space-y-6"
+              onSubmit={handleSubmit(onSubmit, onInvalid)}
+            >
               {/* Username */}
               <div>
                 <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
                   Username
                 </label>
                 <Input
-                  {...register("username", { required: true })}
+                  {...register("username", {
+                    required: "Username is required",
+                    minLength: {
+                      value: 3,
+                      message: "Username must be at least 3 characters",
+                    },
+                    maxLength: {
+                      value: 20,
+                      message: "Username must be at most 20 characters",
+                    },
+                    pattern: {
+                      value: /^[a-zA-Z0-9_]+$/,
+                      message:
+                        "Username can only contain letters, numbers, and underscores",
+                    },
+                  })}
                   type="text"
                   placeholder="Enter your username"
-                  className="h-12 rounded-xl bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-600"
+                  className={`h-12 rounded-xl bg-white dark:bg-gray-800 ${errors.username ? "border-red-500" : "border-gray-300 dark:border-gray-700"} text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-600`}
                 />
+                {errors.username && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.username.message}
+                  </p>
+                )}
               </div>
 
               {/* Email */}
@@ -66,24 +105,54 @@ function Signup() {
                   Email
                 </label>
                 <Input
-                  {...register("email", { required: true })}
+                  {...register("email", {
+                    required: "Email is required",
+                    pattern: {
+                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                      message: "Invalid email address",
+                    },
+                  })}
                   type="email"
                   placeholder="Enter your email"
-                  className="h-12 rounded-xl bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-600"
+                  className={`h-12 rounded-xl bg-white dark:bg-gray-800 ${errors.email ? "border-red-500" : "border-gray-300 dark:border-gray-700"} text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-600`}
                 />
               </div>
 
               {/* Password */}
-              <div>
+              <div className="relative">
                 <label className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
                   Password
                 </label>
+
                 <Input
-                  {...register("password", { required: true })}
-                  type="password"
+                  {...register("password", {
+                    required: "Password is required",
+                    minLength: {
+                      value: 6,
+                      message: "Password must be at least 6 characters",
+                    },
+                    pattern: {
+                      value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/,
+                      message:
+                        "Password must contain uppercase, lowercase, and a number",
+                    },
+                  })}
+                  type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
-                  className="h-12 rounded-xl bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-600"
+                  className={`h-12 rounded-xl pr-12 bg-white dark:bg-gray-800 ${
+                    errors.password
+                      ? "border-red-500"
+                      : "border-gray-300 dark:border-gray-700"
+                  } text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-600`}
                 />
+
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-[38px] text-gray-500 dark:text-gray-400"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
               </div>
 
               {/* Terms */}

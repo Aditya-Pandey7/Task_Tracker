@@ -2,15 +2,13 @@ import { Trash2, Flag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { ITaskData } from "@/sharedType";
 import { format } from "date-fns";
-import { useDeleteTask } from "@/hooks/query_hook";
+import { useDeleteTask, useMarkComplete } from "@/hooks/query_hook";
 import UpdateSheet from "../updateSheet";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useAppDispatch } from "@/store";
-import { markAsComplete } from "@/store/task/taskSlice";
 
 interface TaskItemProps {
   task: ITaskData;
@@ -19,7 +17,8 @@ interface TaskItemProps {
 
 export function TaskItem({ task, assignedTo }: TaskItemProps) {
   const { mutate } = useDeleteTask();
-  const dispatch = useAppDispatch();
+  const { mutate: markComplete } = useMarkComplete();
+
   const handleDelete = () => {
     mutate(task._id);
   };
@@ -31,7 +30,7 @@ export function TaskItem({ task, assignedTo }: TaskItemProps) {
   };
 
   const onToggleComplete = (id: string, isCompleted: boolean) => {
-    dispatch(markAsComplete({ id, isCompleted }));
+    markComplete({ id, isCompleted });
   };
 
   return (
@@ -82,9 +81,11 @@ export function TaskItem({ task, assignedTo }: TaskItemProps) {
       <div className="flex items-center justify-end gap-2">
         <span
           className={`text-xs px-2 py-1 rounded-full ${
-            task.status === "pending"
-              ? "bg-emerald-100 text-gray-600"
-              : "bg-gray-100 text-green-600"
+            task.status === "not started"
+              ? "bg-gray-100 text-gray-600"
+              : task.status === "on track"
+                ? "bg-blue-100 text-blue-600"
+                : "bg-red-100 text-red-600"
           }`}
         >
           {task.status}

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { useForm, type FieldErrors } from "react-hook-form";
 import { useLogin } from "@/hooks/query_hook";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -12,7 +12,11 @@ interface LoginFormData {
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
-  const { register, handleSubmit } = useForm<LoginFormData>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>();
   const { mutate, isPending } = useLogin();
   const navigate = useNavigate();
 
@@ -23,6 +27,13 @@ export default function Login() {
         toast.success(response.message);
       },
     });
+  };
+
+  const onInvalid = (errors: FieldErrors<LoginFormData>) => {
+    const firstError = Object.values(errors)[0];
+    if (firstError?.message) {
+      toast.error(firstError.message as string);
+    }
   };
 
   return (
@@ -47,7 +58,10 @@ export default function Login() {
               Enter your email and password below
             </p>
 
-            <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+            <form
+              className="space-y-6"
+              onSubmit={handleSubmit(onSubmit, onInvalid)}
+            >
               {/* Email */}
               <div className="relative">
                 <Mail
@@ -57,9 +71,9 @@ export default function Login() {
                 <input
                   type="email"
                   placeholder="Email address"
-                  className="
+                  className={`
                     w-full pl-12 pr-4 py-4
-                    border border-gray-300 dark:border-gray-700
+                    border ${errors.email ? "border-red-500" : "border-gray-300 dark:border-gray-700"}
                     bg-white dark:bg-gray-800
                     text-gray-900 dark:text-gray-100
                     rounded-xl
@@ -67,9 +81,20 @@ export default function Login() {
                     focus:border-indigo-600
                     outline-none transition
                     placeholder:text-gray-400 dark:placeholder:text-gray-500
-                  "
-                  {...register("email", { required: true })}
+                  `}
+                  {...register("email", {
+                    required: "Email is required",
+                    pattern: {
+                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                      message: "Invalid email address",
+                    },
+                  })}
                 />
+                {errors.email && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.email.message}
+                  </p>
+                )}
               </div>
 
               {/* Password */}
@@ -81,9 +106,9 @@ export default function Login() {
                 <input
                   type={showPassword ? "text" : "password"}
                   placeholder="Password"
-                  className="
+                  className={`
                     w-full pl-12 pr-12 py-4
-                    border border-gray-300 dark:border-gray-700
+                    border ${errors.password ? "border-red-500" : "border-gray-300 dark:border-gray-700"}
                     bg-white dark:bg-gray-800
                     text-gray-900 dark:text-gray-100
                     rounded-xl
@@ -91,8 +116,14 @@ export default function Login() {
                     focus:border-indigo-600
                     outline-none transition
                     placeholder:text-gray-400 dark:placeholder:text-gray-500
-                  "
-                  {...register("password", { required: true })}
+                  `}
+                  {...register("password", {
+                    required: "Password is required",
+                    minLength: {
+                      value: 6,
+                      message: "Password must be at least 6 characters",
+                    },
+                  })}
                 />
                 <button
                   type="button"
@@ -101,6 +132,11 @@ export default function Login() {
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
+                {errors.password && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.password.message}
+                  </p>
+                )}
               </div>
 
               {/* Remember + Forgot */}

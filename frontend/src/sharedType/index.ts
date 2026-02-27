@@ -19,7 +19,7 @@ export interface IErrorResponse {
 export interface ITaskData {
   title: string;
   description: string;
-  status: "not started" | "on track" | "pending";
+  status: "not started" | "on track" | "off track";
   dueDate: string;
   time: string;
   repeat: string;

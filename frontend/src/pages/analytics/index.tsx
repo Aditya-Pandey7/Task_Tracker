@@ -4,9 +4,22 @@ import { TaskProgressChart } from "./components/taskProgressChart/TaskProgressCh
 import { TaskStatusChart } from "./components/taskStatusChart/TaskStatusChart";
 import { TaskList } from "./components/taskList/TaskList";
 import { useTheme } from "@/context/theme/ThemeContext";
+import { useAppSelector } from "@/store";
 
 function Analytics() {
   const { theme } = useTheme();
+  const { tasks } = useAppSelector((state) => state.task);
+  const { user } = useAppSelector((state) => state.auth);
+
+  const completedTasks = tasks?.filter((task) => task.isCompleted).length || 0;
+
+  const inProgressTasks =
+    tasks?.filter((task) => !task.isCompleted).length || 0;
+
+  const overdueTasks =
+    tasks?.filter(
+      (task) => !task.isCompleted && new Date(task.dueDate) > new Date(),
+    ).length || 0;
   return (
     <div
       className={`min-h-screen ${theme === "dark" ? "bg-gray-900" : "bg-slate-50"} `}
@@ -25,28 +38,29 @@ function Analytics() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <TaskStatCard
             title="Total Tasks"
-            value="100"
+            value={tasks?.length.toString()}
             icon={ListTodo}
             iconColor="text-blue-600"
             iconBg="bg-blue-100"
           />
           <TaskStatCard
             title="Completed"
-            value="45"
+            value={completedTasks.toString()}
             icon={CheckCircle2}
             iconColor="text-green-600"
             iconBg="bg-green-100"
           />
+
           <TaskStatCard
             title="In Progress"
-            value="32"
+            value={inProgressTasks.toString()}
             icon={Clock}
             iconColor="text-amber-600"
             iconBg="bg-amber-100"
           />
           <TaskStatCard
             title="Overdue"
-            value="5"
+            value={overdueTasks.toString()}
             icon={AlertCircle}
             iconColor="text-red-600"
             iconBg="bg-red-100"
@@ -55,13 +69,13 @@ function Analytics() {
 
         {/* Charts Row */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <TaskProgressChart />
-          <TaskStatusChart />
+          <TaskProgressChart tasks={tasks} />
+          <TaskStatusChart tasks={tasks} />
         </div>
 
         {/* Task List */}
         <div className="mb-8">
-          <TaskList />
+          <TaskList tasks={tasks} user={user || undefined} />
         </div>
       </main>
     </div>

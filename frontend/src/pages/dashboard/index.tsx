@@ -5,9 +5,10 @@ import TaskHeader from "@/components/shared/taskHeader";
 import { useAppSelector } from "@/store";
 import type { ITaskData } from "@/sharedType";
 import { Card, CardContent } from "@/components/ui/card";
+import { selectIncompleteTasks } from "@/store/task/taskSlice";
 
 function Dashboard() {
-  const { tasks } = useAppSelector((state) => state.task);
+  const tasks = useAppSelector(selectIncompleteTasks);
   const { user } = useAppSelector((state) => state.auth);
 
   const assignedTo = (task: ITaskData) => {

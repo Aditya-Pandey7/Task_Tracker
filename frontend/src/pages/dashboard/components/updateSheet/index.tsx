@@ -32,8 +32,9 @@ import {
 } from "@/components/ui/select";
 import DatePicker from "./datePicker";
 import type { ITaskData } from "@/sharedType";
-import { Controller, useForm, type SubmitHandler } from "react-hook-form";
+import { Controller, useForm, type SubmitHandler, type FieldErrors } from "react-hook-form";
 import { useUpdateTask } from "@/hooks/query_hook";
+import { toast } from "sonner";
 
 interface UpdateTaskSheetProps {
   task: ITaskData;
@@ -50,6 +51,15 @@ const UpdateTaskSheet = ({ task }: UpdateTaskSheetProps) => {
     console.log("Saving task:", data);
     updateTask(data);
     reset(data);
+  };
+
+  const onInvalid = (errors: FieldErrors<ITaskData>) => {
+    const firstError = Object.values(errors)[0];
+    if (firstError?.message) {
+      toast.error(firstError.message as string);
+    } else if (firstError) {
+      toast.error("Please fill in all required fields");
+    }
   };
 
   const getPriorityColor = (priority: string) => {
@@ -69,8 +79,8 @@ const UpdateTaskSheet = ({ task }: UpdateTaskSheetProps) => {
     switch (status) {
       case "on track":
         return "text-blue-600";
-      case "pending":
-        return "text-gray-600";
+      case "off track":
+        return "text-red-600";
       case "not started":
         return "text-gray-600";
       default:
@@ -126,7 +136,7 @@ const UpdateTaskSheet = ({ task }: UpdateTaskSheetProps) => {
         </SheetHeader>
 
         <form
-          onSubmit={handleSubmit(handleSave)}
+          onSubmit={handleSubmit(handleSave, onInvalid)}
           className="flex-1 flex flex-col"
         >
           <div className="flex-1 overflow-y-auto px-6 py-8">
@@ -142,7 +152,13 @@ const UpdateTaskSheet = ({ task }: UpdateTaskSheetProps) => {
                 </Label>
                 <Input
                   id="title"
-                  {...register("title", { required: true })}
+                  {...register("title", {
+                    required: "Task title is required",
+                    minLength: {
+                      value: 3,
+                      message: "Title must be at least 3 characters",
+                    },
+                  })}
                   placeholder="Enter task title"
                   className="
                     bg-white dark:bg-gray-800
@@ -165,7 +181,13 @@ const UpdateTaskSheet = ({ task }: UpdateTaskSheetProps) => {
                 </Label>
                 <textarea
                   id="description"
-                  {...register("description", { required: true })}
+                  {...register("description", {
+                    required: "Description is required",
+                    minLength: {
+                      value: 10,
+                      message: "Description must be at least 10 characters",
+                    },
+                  })}
                   placeholder="Describe your task in detail..."
                   className="
                     min-h-35 w-full rounded-xl
@@ -265,7 +287,7 @@ const UpdateTaskSheet = ({ task }: UpdateTaskSheetProps) => {
                   className="text-gray-700 dark:text-gray-300 font-medium flex items-center gap-2"
                 >
                   <Activity
-                    className={`size-4 ${getStatusColor(task?.status || "pending")}`}
+                    className={`size-4 ${getStatusColor(task?.status || "not started")}`}
                   />
                   Status
                 </Label>
@@ -281,22 +303,22 @@ const UpdateTaskSheet = ({ task }: UpdateTaskSheetProps) => {
                         <SelectValue placeholder="Select status" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="Pending">
+                        <SelectItem value="not started">
                           <div className="flex items-center gap-2">
                             <div className="size-2 rounded-full bg-gray-500" />
-                            Pending
+                            Not Started
                           </div>
                         </SelectItem>
-                        <SelectItem value="On Track">
+                        <SelectItem value="on track">
                           <div className="flex items-center gap-2">
                             <div className="size-2 rounded-full bg-blue-500" />
                             On Track
                           </div>
                         </SelectItem>
-                        <SelectItem value="Not Started">
+                        <SelectItem value="off track">
                           <div className="flex items-center gap-2">
-                            <div className="size-2 rounded-full bg-green-500" />
-                            Not Started
+                            <div className="size-2 rounded-full bg-red-500" />
+                            Off Track
                           </div>
                         </SelectItem>
                       </SelectContent>

@@ -13,7 +13,12 @@ type FormData = {
 export function TaskInput() {
   const [priority, setPriority] = useState("medium");
   const { mutate: createTask, isPending } = useCreateTask();
-  const { register, handleSubmit, reset } = useForm<FormData>();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormData>();
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
     if (data.title.trim()) {
@@ -35,8 +40,18 @@ export function TaskInput() {
           <input
             type="text"
             placeholder="What needs to be done today?"
-            {...register("title", { required: true, maxLength: 100 })}
-            className="w-full h-14 text-lg px-6 border-2 border-gray-200 focus:border-indigo-400 rounded-2xl shadow-sm"
+            {...register("title", {
+              required: "Task title is required",
+              minLength: {
+                value: 3,
+                message: "Title must be at least 3 characters",
+              },
+              maxLength: {
+                value: 100,
+                message: "Title must be at most 100 characters",
+              },
+            })}
+            className={`w-full h-14 text-lg px-6 border-2 ${errors.title ? "border-red-400" : "border-gray-200"} focus:border-indigo-400 rounded-2xl shadow-sm`}
           />
           <Sparkles className="absolute right-4 top-1/2 -translate-y-1/2 size-5 text-gray-400" />
         </div>
@@ -49,6 +64,7 @@ export function TaskInput() {
           Add Task
         </Button>
       </div>
+
       <div className="flex gap-3 items-center justify-center mb-12">
         <span className="text-sm  text-muted-foreground font-bold">
           Priority:

@@ -1,10 +1,12 @@
 import { useVerifyOtp } from "@/hooks/query_hook";
 import { useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
 
 const OtpPage = () => {
   const navigate = useNavigate();
   const [otp, setOtp] = useState(Array(6).fill(""));
+  const [error, setError] = useState("");
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
   const { mutate, isPending } = useVerifyOtp();
   const { email } = useParams();
@@ -15,6 +17,7 @@ const OtpPage = () => {
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
+    setError(""); // Clear error when user types
 
     if (value && index < 5) {
       inputsRef.current[index + 1]?.focus();
@@ -33,8 +36,22 @@ const OtpPage = () => {
   const handleSubmit = () => {
     const finalOtp = otp.join("");
 
+    // Validate OTP is complete
+    if (finalOtp.length !== 6) {
+      setError("Please enter all 6 digits");
+      toast.error("Please enter all 6 digits");
+      return;
+    }
+
+    // Validate email exists
+    if (!email) {
+      setError("Email not found. Please go back to signup.");
+      toast.error("Email not found");
+      return;
+    }
+
     mutate(
-      { email: email!, otp: finalOtp },
+      { email: email, otp: finalOtp },
       {
         onSuccess: () => {
           navigate("/");
@@ -55,7 +72,7 @@ const OtpPage = () => {
         </p>
 
         {/* OTP Inputs */}
-        <div className="flex justify-center gap-3 mb-8">
+        <div className="flex justify-center gap-3 mb-2">
           {otp.map((digit, index) => (
             <input
               disabled={isPending}
@@ -68,20 +85,22 @@ const OtpPage = () => {
               }}
               onChange={(e) => handleChange(e.target.value, index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
-              className="
+              className={`
                 w-12 h-14 text-center text-xl font-semibold
                 bg-white dark:bg-gray-800
                 text-gray-900 dark:text-gray-100
-                border border-gray-300 dark:border-gray-700
+                border ${error ? "border-red-500" : "border-gray-300 dark:border-gray-700"}
                 rounded-lg
                 focus:ring-2 focus:ring-indigo-600
                 outline-none transition
                 disabled:bg-gray-200 dark:disabled:bg-gray-700
                 disabled:cursor-not-allowed
-              "
+              `}
             />
           ))}
         </div>
+        {error && <p className="text-red-500 text-sm mb-6">{error}</p>}
+        {!error && <div className="mb-6" />}
 
         {/* Verify Button */}
         <button

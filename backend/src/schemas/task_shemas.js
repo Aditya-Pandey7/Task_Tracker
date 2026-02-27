@@ -17,10 +17,11 @@ export const createTaskSchema = z.object({
     })
     .optional(),
   dueDate: z
-    .string({ required_error: "Due date is required" })
+    .string()
     .refine((val) => !isNaN(Date.parse(val)), {
       message: "Due date must be a valid date",
-    }),
+    })
+    .optional(),
   time: z
     .string()
     .refine((val) => !isNaN(Date.parse(val)), {

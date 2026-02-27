@@ -22,12 +22,7 @@ import { Link } from "react-router-dom";
 import { useLogout } from "@/hooks/query_hook";
 import { useTheme } from "@/context/theme/ThemeContext";
 
-const navItems = [
-  { label: "Dashboard", active: true },
-  { label: "My Tasks" },
-  { label: "Projects" },
-  { label: "Team" },
-];
+const navItems = [{ label: "Dashboard", active: true }];
 
 const Header = () => {
   const { theme, setTheme } = useTheme();

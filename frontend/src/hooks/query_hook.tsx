@@ -140,3 +140,27 @@ export const useUpdateTask = () => {
     },
   });
 };
+
+export const useMarkComplete = () => {
+  const dispatch = useAppDispatch();
+  return useMutation({
+    mutationKey: ["markComplete"],
+    mutationFn: async (data: { id: string; isCompleted: boolean }) => {
+      const response = await axios.put(`/tasks/${data.id}`, {
+        isCompleted: data.isCompleted,
+      });
+      return response.data;
+    },
+    onSuccess: (data: IApiresponse<ITaskData>) => {
+      dispatch(updateTask(data.data));
+      successToast(
+        data.data.isCompleted
+          ? "Task marked as completed"
+          : "Task marked as incomplete"
+      );
+    },
+    onError: (error: IErrorResponse) => {
+      showErrorToast(error);
+    },
+  });
+};
