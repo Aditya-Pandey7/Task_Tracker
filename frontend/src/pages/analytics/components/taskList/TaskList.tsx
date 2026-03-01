@@ -3,6 +3,8 @@ import { useTheme } from "@/context/theme/ThemeContext";
 import type { ITaskData, IUser } from "@/sharedType";
 import { format } from "date-fns";
 import { CheckCircle2, Circle, Clock, Plus } from "lucide-react";
+import CreateTaskDialog from "@/components/shared/CreateTaskDialog";
+import { useState } from "react";
 
 interface TaskListProps {
   tasks: ITaskData[] | undefined;
@@ -46,6 +48,7 @@ export function TaskList({ tasks, user }: TaskListProps) {
         return "bg-slate-100 text-slate-700";
     }
   };
+  const [open, setOpen] = useState(false);
 
   return (
     <div
@@ -58,12 +61,12 @@ export function TaskList({ tasks, user }: TaskListProps) {
         <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
           Active Tasks
         </h2>
-        <Button className="cursor-pointer">
+        <Button className="cursor-pointer" onClick={() => setOpen(true)}>
           <Plus />
           Add Task
         </Button>
       </div>
-
+      <CreateTaskDialog isOpen={open} onClose={() => setOpen(false)} />
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>

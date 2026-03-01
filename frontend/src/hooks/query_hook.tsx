@@ -91,7 +91,15 @@ export const useCreateTask = () => {
   const dispatch = useAppDispatch();
   return useMutation({
     mutationKey: ["createTask"],
-    mutationFn: async (data: { title: string; priority: string }) => {
+    mutationFn: async (data: {
+      title: string;
+      priority: "low" | "medium" | "high";
+      description?: string;
+      dueDate?: string;
+      time?: string;
+      status?: "not started" | "on track" | "off track";
+      repeat?: "never" | "daily" | "weekly" | "monday to friday" | "monthly";
+    }) => {
       const response = await axios.post("/tasks", data);
       return response.data;
     },

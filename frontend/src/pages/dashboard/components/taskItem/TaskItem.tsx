@@ -9,6 +9,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useState } from "react";
+import ConfirmDialog from "@/components/shared/confirmDialog";
 
 interface TaskItemProps {
   task: ITaskData;
@@ -18,6 +20,7 @@ interface TaskItemProps {
 export function TaskItem({ task, assignedTo }: TaskItemProps) {
   const { mutate } = useDeleteTask();
   const { mutate: markComplete } = useMarkComplete();
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const handleDelete = () => {
     mutate(task._id);
@@ -35,94 +38,116 @@ export function TaskItem({ task, assignedTo }: TaskItemProps) {
         "/sound_effect/mixkit-gear-metallic-lock-sound-2858.mp3",
       );
       audio.play();
+      markComplete({ id, isCompleted });
+    } else {
+      setShowConfirm(true);
     }
-    markComplete({ id, isCompleted });
+  };
+
+  const handleConfirmUncomplete = () => {
+    markComplete({ id: task._id, isCompleted: false });
+    setShowConfirm(false);
+  };
+
+  const handleCancelUncomplete = () => {
+    setShowConfirm(false);
   };
 
   return (
-    <div className="grid grid-cols-6 items-center px-6 py-4 border-b hover:bg-muted/40 transition">
-      {/* Task Column */}
-      <div className="flex items-center gap-3">
-        <input
-          type="checkbox"
-          checked={task.isCompleted}
-          onChange={(e) => onToggleComplete(task._id, e.target.checked)}
-          className=" h-5 w-5 rounded-md border-2 border-gray-300 checked:bg-green-600 checked:border-green-600 transition-all duration-200 cursor-pointer
+    <>
+      <ConfirmDialog
+        open={showConfirm}
+        title="Mark as Not Completed?"
+        description="Are you sure you want to mark this task as not completed?"
+        confirmText="Yes, mark as not completed"
+        cancelText="Cancel"
+        onConfirm={handleConfirmUncomplete}
+        onCancel={handleCancelUncomplete}
+      />
+      <div className="grid grid-cols-6 items-center px-6 py-4 border-b hover:bg-muted/40 transition">
+        {/* Task Column */}
+        <div className="flex items-center gap-3">
+          <input
+            type="checkbox"
+            checked={task.isCompleted}
+            onChange={(e) => onToggleComplete(task._id, e.target.checked)}
+            className=" h-5 w-5 rounded-md border-2 border-gray-300 checked:bg-green-600 checked:border-green-600 transition-all duration-200 cursor-pointer
 "
-        />
+          />
 
-        <span
-          className={`text-md font-bold ${
-            task.isCompleted
-              ? "line-through text-muted-foreground"
-              : "font-bold text-foreground "
-          }`}
-        >
-          {task.title}
-        </span>
+          <span
+            className={`text-md font-bold ${
+              task.isCompleted
+                ? "line-through text-muted-foreground"
+                : "font-bold text-foreground "
+            }`}
+          >
+            {task.title}
+          </span>
+        </div>
+
+        {/* Priority Column */}
+        <div>
+          <span
+            className={`inline-flex items-center gap-1 px-2 py-1 text-sm capitalize rounded-full ${
+              priorityColors[task.priority as keyof typeof priorityColors]
+            }`}
+          >
+            <Flag size={12} />
+            {task.priority}
+          </span>
+        </div>
+
+        {/* Due Date Column */}
+        <div className="text-sm text-muted-foreground">
+          {format(new Date(task.dueDate), "MMM d, yyyy")} at{" "}
+          {format(new Date(task.time), "h:mm a")}
+        </div>
+
+        {/* Assigned To Column */}
+        <div className="text-sm">{assignedTo ?? "—"}</div>
+
+        {/* Status Column */}
+        <div className="flex items-center justify-end gap-2">
+          <span
+            className={`text-xs px-2 py-1 rounded-full ${
+              task.status === "not started"
+                ? "bg-gray-100 text-gray-600"
+                : task.status === "on track"
+                  ? "bg-blue-100 text-blue-600"
+                  : "bg-red-100 text-red-600"
+            }`}
+          >
+            {task.status}
+          </span>
+        </div>
+        {/* Action Column  */}
+        <div className="flex items-center justify-end gap-2">
+          {/* Edit Tooltip */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="inline-block">
+                <UpdateSheet task={task} />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent side="top">
+              <p>Edit Task</p>
+            </TooltipContent>
+          </Tooltip>
+
+          {/* Delete Tooltip */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon" onClick={handleDelete}>
+                <Trash2 size={16} />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="top">
+              <p>Delete Task</p>
+            </TooltipContent>
+          </Tooltip>
+        </div>
       </div>
-
-      {/* Priority Column */}
-      <div>
-        <span
-          className={`inline-flex items-center gap-1 px-2 py-1 text-sm capitalize rounded-full ${
-            priorityColors[task.priority as keyof typeof priorityColors]
-          }`}
-        >
-          <Flag size={12} />
-          {task.priority}
-        </span>
-      </div>
-
-      {/* Due Date Column */}
-      <div className="text-sm text-muted-foreground">
-        {format(new Date(task.dueDate), "MMM d, yyyy")} at{" "}
-        {format(new Date(task.time), "h:mm a")}
-      </div>
-
-      {/* Assigned To Column */}
-      <div className="text-sm">{assignedTo ?? "—"}</div>
-
-      {/* Status Column */}
-      <div className="flex items-center justify-end gap-2">
-        <span
-          className={`text-xs px-2 py-1 rounded-full ${
-            task.status === "not started"
-              ? "bg-gray-100 text-gray-600"
-              : task.status === "on track"
-                ? "bg-blue-100 text-blue-600"
-                : "bg-red-100 text-red-600"
-          }`}
-        >
-          {task.status}
-        </span>
-      </div>
-      {/* Action Column  */}
-      <div className="flex items-center justify-end gap-2">
-        {/* Edit Tooltip */}
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div className="inline-block">
-              <UpdateSheet task={task} />
-            </div>
-          </TooltipTrigger>
-          <TooltipContent side="top">
-            <p>Edit Task</p>
-          </TooltipContent>
-        </Tooltip>
-
-        {/* Delete Tooltip */}
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button variant="ghost" size="icon" onClick={handleDelete}>
-              <Trash2 size={16} />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent side="top">
-            <p>Delete Task</p>
-          </TooltipContent>
-        </Tooltip>
-      </div>
-    </div>
+    </>
   );
 }

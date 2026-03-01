@@ -11,10 +11,27 @@ const getallTasks = async (req, res) => {
 
 const createTask = async (req, res) => {
   const { title, priority } = req.body;
-  if (!title) {
-    throw new ErrorHandler("Title is required", 400, "ValidationError");
+
+  if (!title || !priority) {
+    throw new ErrorHandler(
+      "Title and priority are required",
+      400,
+      "ValidationError",
+    );
   }
-  const newTask = await Task.create({ title, priority, user: req.user._id });
+
+  const newTask = await Task.create({
+    title,
+    priority,
+    user: req.user._id,
+    description: req.body.description,
+    status: req.body.status,
+    dueDate: req.body.dueDate,
+    time: req.body.time,
+    repeat: req.body.repeat,
+    isCompleted: req.body.isCompleted,
+  });
+
   res.status(201).json(ApiResponse(201, newTask, "Task created successfully"));
 };
 

@@ -21,11 +21,14 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useLogout } from "@/hooks/query_hook";
 import { useTheme } from "@/context/theme/ThemeContext";
+import { useState } from "react";
+import { CreateTaskDialog } from "../CreateTaskDialog";
 
 const navItems = [{ label: "Dashboard", active: true }];
 
 const Header = () => {
   const { theme, setTheme } = useTheme();
+  const [open, setOpen] = useState(false);
 
   const toggleTheme = () => {
     setTheme(theme === "light" ? "dark" : "light");
@@ -80,10 +83,14 @@ const Header = () => {
         {/* Right Side */}
         <div className="flex items-center gap-2">
           {/* New Task */}
-          <button className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-lg bg-teal-600 text-sm font-medium hover:bg-teal-700 active:scale-95 transition-all duration-200">
+          <button
+            className="hidden sm:flex items-center gap-1.5 px-4 py-2 rounded-lg bg-teal-600 text-sm font-medium hover:bg-teal-700 active:scale-95 transition-all duration-200"
+            onClick={() => setOpen(true)}
+          >
             <Plus className="w-4 h-4" />
             New Task
           </button>
+          <CreateTaskDialog isOpen={open} onClose={() => setOpen(false)} />
 
           <button
             className="relative flex items-center justify-center w-9 h-9 rounded-lg hover:bg-gray-100 hover:text-black active:scale-95 transition-all duration-200"
