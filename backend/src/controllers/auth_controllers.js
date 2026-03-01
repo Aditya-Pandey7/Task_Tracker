@@ -11,7 +11,7 @@ const options = {
   httpOnly: true,
   secure: true,
   sameSite: "none",
-  maxAge: 24 * 60 * 60 * 1000, // 1 day
+  maxAge: 24 * 60 * 60 * 7000, // 1 week
 };
 
 const signup = async (req, res) => {
