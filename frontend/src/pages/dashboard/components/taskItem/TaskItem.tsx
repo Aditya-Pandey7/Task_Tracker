@@ -30,6 +30,12 @@ export function TaskItem({ task, assignedTo }: TaskItemProps) {
   };
 
   const onToggleComplete = (id: string, isCompleted: boolean) => {
+    if (isCompleted) {
+      const audio = new Audio(
+        "/sound_effect/mixkit-gear-metallic-lock-sound-2858.mp3",
+      );
+      audio.play();
+    }
     markComplete({ id, isCompleted });
   };
 
