@@ -15,7 +15,6 @@ import {
   CalendarClock,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
-import logoMark from "@/assets/logo-mark.png";
 import { useLogout } from "@/hooks/query_hook";
 
 function AppSidebar() {
@@ -25,35 +24,40 @@ function AppSidebar() {
     mutate();
   };
   const menuItems = [
-    { title: "Dashboard", icon: Home, path: "/" },
-    { title: "Today", icon: Calendar, path: "/today" },
-    { title: "Upcoming", icon: CalendarClock, path: "/upcoming" },
-    { title: "Completed", icon: CheckCircle2, path: "/completed" },
-    { title: "Analytics", icon: Film, path: "/analytics" },
-    { title: "Profile", icon: Tv, path: "/me" },
+    { title: "DASHBOARD", icon: Home, path: "/" },
+    { title: "TODAY", icon: Calendar, path: "/today" },
+    { title: "UPCOMING", icon: CalendarClock, path: "/upcoming" },
+    { title: "COMPLETED", icon: CheckCircle2, path: "/completed" },
+    { title: "ANALYTICS", icon: Film, path: "/analytics" },
+    { title: "PROFILE", icon: Tv, path: "/me" },
   ];
 
   return (
     <Sidebar
-      variant="inset"
+      variant="sidebar"
       side="left"
-      className="border-r bg-background/80 backdrop-blur-xl"
+      className="border-r border-foreground bg-background"
     >
       {/* Header */}
-      <SidebarHeader className="px-6 py-6 flex flex-row items-center gap-3 border-b">
-        <div className="p-2 rounded-xl bg-primary/10">
-          <img src={logoMark} alt="Taskly logo" className="w-5 h-5" />
+      <SidebarHeader className="px-6 py-10 flex flex-col gap-2 border-b border-foreground bg-background">
+        <div className="flex items-center gap-3">
+          <img
+            src="/src/assets/logo-mark.png"
+            alt="Taskly Logo"
+            className="w-6 h-6  "
+          />
+          <h1 className="text-xl font-black uppercase tracking-tighter">
+            TASKLY.
+          </h1>
         </div>
-
-        <div>
-          <h1 className="text-lg font-semibold tracking-tight">Taskly</h1>
-          <p className="text-xs text-muted-foreground">Productivity App</p>
-        </div>
+        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
+          PRODUCTIVITY SYSTEM v1.0
+        </p>
       </SidebarHeader>
 
       {/* Content */}
-      <SidebarContent className="px-4 py-6">
-        <SidebarGroup className="space-y-2">
+      <SidebarContent className="px-0 py-6 bg-background">
+        <SidebarGroup className="space-y-0 p-0">
           {menuItems.map((item) => {
             const Icon = item.icon;
 
@@ -62,19 +66,22 @@ function AppSidebar() {
                 key={item.title}
                 to={item.path}
                 className={({ isActive }) =>
-                  `relative flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200
+                  `group relative flex items-center gap-4 px-8 py-4 text-[11px] font-black uppercase tracking-widest transition-all
                   ${
                     isActive
-                      ? "bg-primary text-primary-foreground shadow-sm"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                  }`
+                      ? "bg-foreground text-background"
+                      : "text-foreground hover:bg-muted"
+                  } border-b border-foreground/10 last:border-0`
                 }
               >
                 <Icon
-                  size={18}
-                  className="transition-transform group-hover:scale-105"
+                  size={16}
+                  className="transition-transform group-hover:rotate-12"
                 />
                 <span>{item.title}</span>
+                <div className="absolute right-6 opacity-0 group-hover:opacity-100 transition-opacity">
+                  →
+                </div>
               </NavLink>
             );
           })}
@@ -82,13 +89,13 @@ function AppSidebar() {
       </SidebarContent>
 
       {/* Footer */}
-      <SidebarFooter className="p-4 border-t">
+      <SidebarFooter className="p-0 border-t border-foreground bg-background">
         <button
-          className="flex w-full items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-all duration-200"
+          className="flex w-full items-center gap-4 px-8 py-6 text-[11px] font-black uppercase tracking-widest text-foreground hover:bg-destructive hover:text-white transition-all"
           onClick={handleLogout}
         >
           <LogOut size={16} />
-          Logout
+          <span>LOGOUT</span>
         </button>
       </SidebarFooter>
     </Sidebar>
