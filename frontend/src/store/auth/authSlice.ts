@@ -1,15 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { checkAuthStatus } from "./authThunk";
-
-export interface User {
-  id: string;
-  username: string;
-  email: string;
-}
+import type { IUser } from "@/sharedType";
 
 export interface AuthState {
-  user: User | null;
+  user: IUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
@@ -31,7 +26,7 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.error = null;
     },
-    setUser: (state, action: PayloadAction<User>) => {
+    setUser: (state, action: PayloadAction<IUser>) => {
       state.user = action.payload;
       state.isAuthenticated = true;
       console.log("User set in auth slice:", state.user);

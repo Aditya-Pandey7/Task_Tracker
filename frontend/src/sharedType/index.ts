@@ -2,7 +2,7 @@ export interface IUser {
   id: string;
   username: string;
   email: string;
-  tasks: ITaskData[];
+  tasks?: ITaskData[];
 }
 
 export interface IApiresponse<T> {

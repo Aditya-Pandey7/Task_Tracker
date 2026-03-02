@@ -7,7 +7,7 @@ import LoadingDialog from "@/components/shared/loadingDialog";
 
 type FormData = {
   title: string;
-  priority: string;
+  priority: "high" | "medium" | "low";
 };
 
 export function TaskInput() {
@@ -23,7 +23,7 @@ export function TaskInput() {
   const onSubmit: SubmitHandler<FormData> = (data) => {
     if (data.title.trim()) {
       console.log("Task added:", data.title, data.priority);
-      createTask({ title: data.title, priority });
+      createTask({ title: data.title, priority: data.priority });
       reset();
       setPriority("medium");
     }
