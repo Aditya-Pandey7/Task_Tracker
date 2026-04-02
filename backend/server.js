@@ -22,8 +22,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(passport.initialize());
 
-app.listen(process.env.PORT, () => {
-  console.log(`Server is running on port ${process.env.PORT}`);
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
 
 connectDB();
@@ -32,6 +34,11 @@ connectDB();
 const { default: taskRoutes } = await import("./src/routes/task_routes.js");
 const { default: userRoutes } = await import("./src/routes/auth_routes.js");
 import ErrorHandler from "./src/utils/ErrorHandler.js";
+
+app.use("/api/v1/check", (req, res, next) => {
+  console.log("server is working");
+  next();
+});
 
 // Routes uses
 app.use("/api/v1/tasks", taskRoutes);
